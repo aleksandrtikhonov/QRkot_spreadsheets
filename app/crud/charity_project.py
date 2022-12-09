@@ -9,9 +9,9 @@ from app.models.charity_project import CharityProject
 
 class CRUDCharityProject(CRUDBase):
     async def get_charity_project_by_name(
-        self,
-        charity_project_name: str,
-        session: AsyncSession,
+            self,
+            charity_project_name: str,
+            session: AsyncSession,
     ) -> Optional[int]:
         db_charity_project = await session.execute(
             select(CharityProject).where(
@@ -21,15 +21,16 @@ class CRUDCharityProject(CRUDBase):
         return db_charity_project.scalars().first()
 
     async def get_projects_by_completion_rate(
-        self, session: AsyncSession
+            self, session: AsyncSession
     ) -> List[Dict[str, str]]:
         closed_projects = await session.execute(
             select(
                 CharityProject.name,
                 CharityProject.description,
                 (
-                    func.julianday(CharityProject.close_date)
-                    - func.julianday(CharityProject.create_date)
+                        func.julianday(
+                            CharityProject.close_date) - func.julianday(
+                    CharityProject.create_date)
                 ).label('project_duration'),
             )
             .where(CharityProject.fully_invested.is_(True))

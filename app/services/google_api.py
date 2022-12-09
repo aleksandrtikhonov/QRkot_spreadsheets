@@ -3,10 +3,16 @@ from datetime import datetime, timedelta
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
-
-FORMAT = "%Y/%m/%d %H:%M:%S"
-SHEETS_SERVICE_VERSION = 'v4'
-DRIVE_SERVICE_VERSION = 'v3'
+from app.services.const import (
+    FORMAT,
+    SHEETS_SERVICE_VERSION,
+    SHEET_TYPE,
+    SHEET_ID,
+    TITLE,
+    ROW_COUNT,
+    COLUMN_COUNT,
+    DRIVE_SERVICE_VERSION,
+)
 
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
@@ -17,10 +23,13 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
         'sheets': [
             {
                 'properties': {
-                    'sheetType': 'GRID',
-                    'sheetId': 0,
-                    'title': 'Отчеты QRkot',
-                    'gridProperties': {'rowCount': 60, 'columnCount': 8},
+                    'sheetType': SHEET_TYPE,
+                    'sheetId': SHEET_ID,
+                    'title': TITLE,
+                    'gridProperties': {
+                        'rowCount': ROW_COUNT,
+                        'columnCount': COLUMN_COUNT,
+                    },
                 }
             }
         ],
@@ -44,7 +53,7 @@ async def set_user_permissions(
     service = await wrapper_services.discover('drive', DRIVE_SERVICE_VERSION)
     await wrapper_services.as_service_account(
         service.permissions.create(
-            fileId=spreadsheet_id, json=permissions_body, fields="id"
+            fileId=spreadsheet_id, json=permissions_body, fields='id'
         )
     )
 
